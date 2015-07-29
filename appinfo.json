@@ -1,0 +1,35 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "nutsooo@gmail.com",
+    "longName": "HOUR-Bricks",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "characterRegex": "[0-9]",
+                "file": "fonts/Titillium-BoldUpright.otf",
+                "name": "FONT_Titillium_BoldUpright_60",
+                "type": "font"
+            },
+            {
+                "characterRegex": "[0-9]",
+                "file": "fonts/Titillium-Bold.otf",
+                "name": "FONT_Titillium_BOLD_60",
+                "type": "font"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "HOUR-Bricks",
+    "targetPlatforms": [
+        "basalt"
+    ],
+    "uuid": "19273628-fa92-4964-8fe6-02de54915d6b",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}
