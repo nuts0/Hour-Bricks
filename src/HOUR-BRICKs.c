@@ -14,6 +14,8 @@ static TextLayer *s_battery_layer;
 static TextLayer *s_day_label, *s_num_label, *s_month_label;
 static char s_day_buffer[6],s_num_buffer[4],s_month_buffer[4];
 
+//GFont custom_font;
+
 #define Hbrick_WIDTH 15
 #define Hbrick_HEIGHT 6
 #define Vbrick_WIDTH 6
@@ -109,12 +111,12 @@ static void date_update_proc(Layer *layer, GContext *ctx) {
 //------------------------------------------------------------------------------------
 static void window_load(Window *window) {
 	//Time layer
-	text_layer = text_layer_create(GRect(30, 22, 90, 80));
+	text_layer = text_layer_create(GRect(33, 14, 90, 50));
 	text_layer_set_background_color(text_layer, GColorClear);
 	text_layer_set_text_color(text_layer, GColorWhite);
 	text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
-	text_layer_set_font(text_layer, custom_font);
-//	text_layer_set_font(text_layer, fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49));
+//	text_layer_set_font(text_layer, custom_font);
+	text_layer_set_font(text_layer, fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49));
 
 	layer_add_child(window_get_root_layer(window), (Layer*) text_layer);	
 
@@ -170,6 +172,9 @@ static void window_load(Window *window) {
 //	layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_battery_layer));
 	layer_add_child(window_layer, text_layer_get_layer(s_battery_layer));
 
+//	custom_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_Titillium_BOLD_60));
+//	GFont custom_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_Titillium_BoldUpright_60));
+
 }
 //------------------------------------------------------------------------------------
 static void window_unload(Window *window) {
@@ -192,9 +197,6 @@ static void init() {
 	/*BLACK back*/
 	window_set_background_color(s_main_window, COLOR_FALLBACK(GColorBlack, GColorBlack));
 
-	GFont custom_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_Titillium_BOLD_60));
-//	GFont custom_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_Titillium_BoldUpright_60));
-	
 	window_stack_push(s_main_window, true);
 }
 //------------------------------------------------------------------------------------
