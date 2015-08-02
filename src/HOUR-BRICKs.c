@@ -11,8 +11,13 @@ char buffer[] = "00";
 
 static Layer *s_date_layer;
 static TextLayer *s_battery_layer;
+static TextLayer *s_connection_layer;
+
 static TextLayer *s_day_label, *s_num_label, *s_month_label;
 static char s_day_buffer[6],s_num_buffer[4],s_month_buffer[4];
+
+static BitmapLayer *s_icon_layer;
+static GBitmap *s_icon_bitmap = NULL;
 
 //GFont custom_font;
 
@@ -32,6 +37,17 @@ static void handle_battery(BatteryChargeState charge_state) {
 		snprintf(battery_text, sizeof(battery_text), "%d%%", charge_state.charge_percent);
 	}
 	text_layer_set_text(s_battery_layer, battery_text);
+}
+//------------------------------------------------------------------------------------
+static void handle_bluetooth(bool connected) {
+//	text_layer_set_text(s_connection_layer, connected ? "c" : "d");
+	if(connected){
+		s_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BT);
+		bitmap_layer_set_compositing_mode(s_icon_layer, GCompOpSet);
+		bitmap_layer_set_bitmap(s_icon_layer, s_icon_bitmap);
+	}else{
+        gbitmap_destroy(s_icon_bitmap);
+	}
 }
 //------------------------------------------------------------------------------------
 GRect brick_location(int H) {
@@ -129,12 +145,17 @@ static void window_load(Window *window) {
 	layer_mark_dirty(display_layer);
 
 	GRect window_bounds = layer_get_bounds(window_layer);
+
+	//icon
+	s_icon_layer = bitmap_layer_create(GRect(45, 137, 20, 20));
+	layer_add_child(window_layer, bitmap_layer_get_layer(s_icon_layer));
+
 	// youbi 	
 	s_date_layer = layer_create(window_bounds);
 	layer_set_update_proc(s_date_layer, date_update_proc);
 	layer_add_child(window_layer, s_date_layer);
 
-	s_day_label = text_layer_create(GRect(30, 75, 90,105));
+	s_day_label = text_layer_create(GRect(30, 75, 90,25));
 	text_layer_set_text(s_day_label, s_day_buffer);
 	text_layer_set_background_color(s_day_label, GColorClear);
 	text_layer_set_text_color(s_day_label, GColorWhite);
@@ -143,7 +164,7 @@ static void window_load(Window *window) {
 	layer_add_child(s_date_layer, text_layer_get_layer(s_day_label));
 
 	// date 
-	s_num_label = text_layer_create(GRect(30, 95, 90, 129));
+	s_num_label = text_layer_create(GRect(30, 95, 90, 25));
 	text_layer_set_text(s_num_label, s_num_buffer);
 	text_layer_set_background_color(s_num_label, GColorClear);
 	text_layer_set_text_color(s_num_label, GColorWhite);
@@ -152,7 +173,7 @@ static void window_load(Window *window) {
 	layer_add_child(s_date_layer, text_layer_get_layer(s_num_label));
 
 	//month
-	s_month_label = text_layer_create(GRect(30, 115, 90, 153));
+	s_month_label = text_layer_create(GRect(30, 115, 90, 25));
 	text_layer_set_text(s_month_label, s_month_buffer);
 	text_layer_set_background_color(s_month_label, GColorClear);
 	text_layer_set_text_color(s_month_label, GColorWhite);
@@ -160,16 +181,23 @@ static void window_load(Window *window) {
 	text_layer_set_font(s_month_label, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
 	layer_add_child(s_date_layer, text_layer_get_layer(s_month_label));
 
-	/* Battery */	
-	s_battery_layer = text_layer_create(GRect(30, 135, 90, 163));
+	// bluetooth
+	s_connection_layer = text_layer_create(GRect(30, 130,20, 20));
+	text_layer_set_background_color(s_connection_layer, GColorClear);
+	text_layer_set_text_color(s_connection_layer, GColorWhite);
+	text_layer_set_text_alignment(s_connection_layer, GTextAlignmentCenter);
+	text_layer_set_font(s_connection_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+	handle_bluetooth(bluetooth_connection_service_peek());
+	layer_add_child(window_layer, text_layer_get_layer(s_connection_layer));
+
+	// Battery
+	s_battery_layer = text_layer_create(GRect(38, 135, 90, 25));
 	text_layer_set_text_color(s_battery_layer, GColorWhite);
 	text_layer_set_background_color(s_battery_layer, GColorClear);
 	text_layer_set_text_alignment(s_battery_layer, GTextAlignmentCenter);
 	text_layer_set_font(s_battery_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
 	text_layer_set_text(s_battery_layer, "100%");
-
 	battery_state_service_subscribe(handle_battery);
-//	layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_battery_layer));
 	layer_add_child(window_layer, text_layer_get_layer(s_battery_layer));
 
 //	custom_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_Titillium_BOLD_60));
@@ -181,10 +209,15 @@ static void window_unload(Window *window) {
 	text_layer_destroy(text_layer);
 	layer_destroy(display_layer);
 	battery_state_service_unsubscribe();
+	text_layer_destroy(s_connection_layer);
 	text_layer_destroy(s_battery_layer);
 	text_layer_destroy(s_month_label);
 	text_layer_destroy(s_day_label);
 	text_layer_destroy(s_num_label);
+
+	bitmap_layer_destroy(s_icon_layer);
+	gbitmap_destroy(s_icon_bitmap);
+
 }
 //------------------------------------------------------------------------------------
 static void init() {

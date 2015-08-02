@@ -3,11 +3,23 @@
     "capabilities": [
         ""
     ],
-    "companyName": "nutsooo@gmail.com",
+    "companyName": "Nuts0",
     "longName": "HOUR-Bricks",
     "projectType": "native",
     "resources": {
-        "media": []
+        "media": [
+            {
+                "file": "images/hour-bricks-icon.png",
+                "menuIcon": true,
+                "name": "icon",
+                "type": "png"
+            },
+            {
+                "file": "images/bt_wt18.png",
+                "name": "IMAGE_BT",
+                "type": "png"
+            }
+        ]
     },
     "sdkVersion": "3",
     "shortName": "HOUR-Bricks",
@@ -15,7 +27,7 @@
         "basalt"
     ],
     "uuid": "19273628-fa92-4964-8fe6-02de54915d6b",
-    "versionLabel": "1.0",
+    "versionLabel": "1.1",
     "watchapp": {
         "watchface": true
     }
